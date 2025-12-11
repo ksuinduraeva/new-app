@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import AddItemForm from "../../widgets/AddItemForm";
 import ShoppingItemCard from "../../widgets/ShoppingItem";
 import styles from "./ShoppingListPage.module.css";
@@ -9,7 +9,7 @@ function ShoppingListPage() {
   const [items, setItems] = useState<ShoppingItem[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "bought">("all");
 
-  function addItem(title: string, quantity?: number): void {
+  function addItem(title: string, quantity?: number) {
     const newItem: ShoppingItem = {
       id: uuid(),
       title,
@@ -20,7 +20,7 @@ function ShoppingListPage() {
     setItems((previousItems) => [newItem, ...previousItems]);
   }
 
-  function toggleBought(itemId: string): void {
+  function toggleBought(itemId: string) {
     setItems((previousItems) =>
       previousItems.map((existingItem) =>
         existingItem.id === itemId
@@ -30,13 +30,13 @@ function ShoppingListPage() {
     );
   }
 
-  function removeItem(itemId: string): void {
+  function removeItem(itemId: string) {
     setItems((previousItems) =>
       previousItems.filter((existingItem) => existingItem.id !== itemId),
     );
   }
 
-  function clearBought(): void {
+  function clearBought() {
     setItems((previousItems) =>
       previousItems.filter((existingItem) => existingItem.bought === false),
     );
