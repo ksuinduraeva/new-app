@@ -1,9 +1,9 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import AddItemForm from "../../widgets/AddItemForm";
 import ShoppingItemCard from "../../widgets/ShoppingItem";
 import styles from "./ShoppingListPage.module.css";
 import { v4 as uuid } from "uuid";
-import type { ShoppingItem } from "../../types";
+import type { ShoppingItem } from "../../entities";
 
 function ShoppingListPage() {
   const [items, setItems] = useState<ShoppingItem[]>([]);
@@ -42,11 +42,15 @@ function ShoppingListPage() {
     );
   }
 
-  const filterItems = items.filter((existingItem) => {
-    if (filter === "all") return true;
-    if (filter === "active") return existingItem.bought === false;
-    return existingItem.bought === true;
-  });
+  const filterItems = useMemo(
+    () =>
+      items.filter((existingItem) => {
+        if (filter === "all") return true;
+        if (filter === "active") return existingItem.bought === false;
+        return existingItem.bought === true;
+      }),
+    [items, filter],
+  );
 
   return (
     <div className={styles.container}>
@@ -88,7 +92,7 @@ function ShoppingListPage() {
       </div>
 
       <ul className={styles.list}>
-        {filterItems.length === 0 ? (
+        {filterItems.length === 0 ? ( // тут либо так, либо !filterItems.length
           <li className={styles.empty}>Список пуст</li>
         ) : (
           filterItems.map((existingItem) => (

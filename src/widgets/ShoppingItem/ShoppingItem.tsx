@@ -1,4 +1,4 @@
-import type { ShoppingItem } from "../../types";
+import type { ShoppingItem } from "../../entities";
 import styles from "./ShoppingItem.module.css";
 
 type ItemHandler = (itemId: string) => void;
@@ -34,7 +34,7 @@ function ShoppingItemCard({ item, onToggle, onRemove }: ShoppingItemProps) {
         <div className={item.bought ? styles.titleBought : styles.title}>
           {item.title}
         </div>
-        {item.quantity !== undefined ? (
+        {item.quantity != null && item.quantity > 0 ? (
           <div className={styles.quantity}>×{item.quantity}</div>
         ) : null}
       </div>

@@ -55,11 +55,7 @@ function AddItemForm({ onAdd }: AddItemFormProps) {
         aria-label="item-quantity"
         inputMode="numeric"
       />
-      <button
-        className={styles.button}
-        type="submit"
-        disabled={title.trim() === ""}
-      >
+      <button className={styles.button} type="submit" disabled={!!title.trim()}>
         Добавить
       </button>
     </form>
