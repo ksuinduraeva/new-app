@@ -1,15 +1,16 @@
-import { useState } from "react";
+import type { FC } from "react";
+import { useState, useMemo } from "react";
 import AddItemForm from "../../widgets/AddItemForm";
 import ShoppingItemCard from "../../widgets/ShoppingItem";
 import styles from "./ShoppingListPage.module.css";
 import { v4 as uuid } from "uuid";
-import type { ShoppingItem } from "../../types";
+import type { ShoppingItem } from "../../entities";
 
-function ShoppingListPage() {
+const ShoppingListPage: FC = () => {
   const [items, setItems] = useState<ShoppingItem[]>([]);
   const [filter, setFilter] = useState<"all" | "active" | "bought">("all");
 
-  function addItem(title: string, quantity?: number) {
+  const addItem = (title: string, quantity?: number) => {
     const newItem: ShoppingItem = {
       id: uuid(),
       title,
@@ -18,9 +19,9 @@ function ShoppingListPage() {
       createdAt: new Date().toISOString(),
     };
     setItems((previousItems) => [newItem, ...previousItems]);
-  }
+  };
 
-  function toggleBought(itemId: string) {
+  const toggleBought = (itemId: string) => {
     setItems((previousItems) =>
       previousItems.map((existingItem) =>
         existingItem.id === itemId
@@ -28,25 +29,29 @@ function ShoppingListPage() {
           : existingItem,
       ),
     );
-  }
+  };
 
-  function removeItem(itemId: string) {
+  const removeItem = (itemId: string) => {
     setItems((previousItems) =>
       previousItems.filter((existingItem) => existingItem.id !== itemId),
     );
-  }
+  };
 
-  function clearBought() {
+  const clearBought = () => {
     setItems((previousItems) =>
-      previousItems.filter((existingItem) => existingItem.bought === false),
+      previousItems.filter((existingItem) => !existingItem.bought),
     );
-  }
+  };
 
-  const filterItems = items.filter((existingItem) => {
-    if (filter === "all") return true;
-    if (filter === "active") return existingItem.bought === false;
-    return existingItem.bought === true;
-  });
+  const filterItems = useMemo(
+    () =>
+      items.filter((item) => {
+        if (filter === "all") return true;
+        if (filter === "active") return !item.bought;
+        return item.bought;
+      }),
+    [items, filter],
+  );
 
   return (
     <div className={styles.container}>
@@ -88,13 +93,13 @@ function ShoppingListPage() {
       </div>
 
       <ul className={styles.list}>
-        {filterItems.length === 0 ? (
+        {!filterItems.length ? (
           <li className={styles.empty}>Список пуст</li>
         ) : (
-          filterItems.map((existingItem) => (
-            <li key={existingItem.id}>
+          filterItems.map((item) => (
+            <li key={item.id}>
               <ShoppingItemCard
-                item={existingItem}
+                item={item}
                 onToggle={toggleBought}
                 onRemove={removeItem}
               />
@@ -104,6 +109,6 @@ function ShoppingListPage() {
       </ul>
     </div>
   );
-}
+};
 
 export default ShoppingListPage;
