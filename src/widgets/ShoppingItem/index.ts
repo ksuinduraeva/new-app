@@ -1,1 +1,1 @@
-export { default } from "./ShoppingItem";
+export { default } from "./ui/ShoppingItem";
